@@ -31,6 +31,7 @@ void loadEvents ( pQueue& events, const char* filename )
     while ( input.peek () != EOF )
     {
         input >> add.start >> add.duration;
+        if ( input.eof() ) break;
         events.push ( add );
     }
 }
