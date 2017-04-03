@@ -1,22 +1,15 @@
 #pragma once
 
 #include <fstream>
+#include <functional>
 #include <iostream>
+#include <queue>
 #include <vector>
+
+#include "Event.h"
 
 #define EVENT_FILE "events_1.txt"
 
-struct Event;
+typedef std::priority_queue<Event, std::vector<Event>, std::greater<Event>> pQueue;
 
-void loadEvents ( std::vector<Event>& events, const char* filename );
-
-struct Event
-{
-    enum Type
-    {
-        ARRIVAL,
-        DEPARTURE
-    } type;
-    unsigned start;
-    unsigned duration;
-};
+void loadEvents ( pQueue& events, const char* filename );

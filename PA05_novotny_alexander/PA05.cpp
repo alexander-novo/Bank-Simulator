@@ -2,12 +2,12 @@
 
 int main ()
 {
-    std::vector<Event> events;
+    pQueue events;
 
     loadEvents ( events, EVENT_FILE );
 }
 
-void loadEvents ( std::vector<Event>& events, const char* filename )
+void loadEvents ( pQueue& events, const char* filename )
 {
     std::ifstream input ( filename );
     Event add;
@@ -16,6 +16,6 @@ void loadEvents ( std::vector<Event>& events, const char* filename )
     while ( input.peek () != EOF )
     {
         input >> add.start >> add.duration;
-        events.push_back ( add );
+        events.push ( add );
     }
 }
