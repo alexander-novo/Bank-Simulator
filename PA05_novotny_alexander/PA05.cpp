@@ -58,9 +58,9 @@ void simulate ( pQueue& events, Stats& stats )
 void processEvents ( pQueue& events, Line* lines, bool* tellers, Stats& stats )
 {
     //Keep processing the top event as long as it should be happening right now
-    while ( events.size() && events.top().start == stats.currentTime )
+    while ( events.size () && events.top ().start == stats.currentTime )
     {
-        Event currentEvent = events.top();
+        Event currentEvent = events.top ();
         switch ( currentEvent.type )
         {
             case Event::ARRIVAL:
@@ -74,7 +74,7 @@ void processEvents ( pQueue& events, Line* lines, bool* tellers, Stats& stats )
                 //Another happy customer
                 stats.totalCustomersServed++;
 
-                std::cout << "Freed up teller " << currentEvent.teller 
+                std::cout << "Freed up teller " << currentEvent.teller
                     << " at " << stats.currentTime << std::endl;
                 break;
         }
@@ -100,16 +100,22 @@ void processLines ( pQueue& events, Line* lines, bool* tellers, Stats& stats )
                 //Create our departure event
                 Event departEvent;
                 departEvent.type = Event::DEPARTURE;
-                departEvent.start = stats.currentTime + comeFrom->front().duration;
+                departEvent.start = stats.currentTime + comeFrom->front ().duration;
                 departEvent.teller = tellerIndex;
 
                 //Add it to the event queue
                 events.push ( departEvent );
 
+                //Check if the person that just went up has waited the longest
+                if ( ( stats.currentTime - comeFrom->front ().start ) > stats.maximumWait )
+                {
+                    stats.maximumWait = stats.currentTime - comeFrom->front ().start;
+                }
+
                 //And move the line along
                 comeFrom->pop ();
 
-                std::cout << "Reserved teller " << tellerIndex << " at " 
+                std::cout << "Reserved teller " << tellerIndex << " at "
                     << stats.currentTime << " until " << departEvent.start << std::endl;
             }
         }
@@ -119,6 +125,10 @@ void processLines ( pQueue& events, Line* lines, bool* tellers, Stats& stats )
     for ( unsigned lineIndex = 0; lineIndex < stats.numLines; lineIndex++ )
     {
         stats.totalWaitTime += lines [ lineIndex ].size ();
+        if ( lines [ lineIndex ].size () > stats.maximumLength )
+        {
+            stats.maximumLength = lines [ lineIndex ].size ();
+        }
     }
 }
 
@@ -131,7 +141,7 @@ Line* findLongestWait ( Line* lines, Stats& stats )
     {
         if ( lines [ lineIndex ].size () == 0 ) continue;
         //If min is uninitialised or our index is less than min, we have a new min
-        if ( min == nullptr || lines [ lineIndex ].front() < min->front() )
+        if ( min == nullptr || lines [ lineIndex ].front () < min->front () )
         {
             min = lines + lineIndex;
         }
@@ -169,13 +179,16 @@ bool shouldEndSimulation ( pQueue& events, Line* lines, bool* tellers, Stats& st
     }
 }
 
-void calculateStats (const Stats& stats)
+void calculateStats ( const Stats& stats )
 {
     std::cout << std::endl << "\tFinal Statistics:" << std::endl
         << "Number of tellers: " << stats.numTellers << std::endl
         << "Number of lines: " << stats.numLines << std::endl
         << "Total number of customer served: " << stats.totalCustomersServed << std::endl
-        << "Average Wait time: " << (stats.totalWaitTime / (double) stats.totalCustomersServed) << std::endl;
+        << "Average wait time: " << ( stats.totalWaitTime / ( double ) stats.totalCustomersServed ) << std::endl
+        << "Maximum wait time: " << stats.maximumWait << std::endl
+        << "Average line length: " << ( stats.totalWaitTime / ( double ) stats.currentTime / stats.numLines ) << std::endl
+        << "Maximum line length: " << stats.maximumLength << std::endl;
 
     std::cout << std::endl;
 }

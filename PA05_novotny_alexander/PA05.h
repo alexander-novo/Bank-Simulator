@@ -21,6 +21,8 @@ struct Stats
 
     unsigned long long totalWaitTime = 0;
     unsigned totalCustomersServed = 0;
+    unsigned maximumWait = 0;
+    unsigned maximumLength = 0;
 };
 
 void loadEvents ( pQueue& events, const char* filename );
