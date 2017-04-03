@@ -194,7 +194,7 @@ void calculateStats ( const Stats& stats )
     std::cout << std::endl << "\tFinal Statistics:" << std::endl
         << "Number of tellers: " << stats.numTellers << std::endl
         << "Number of lines: " << stats.numLines << std::endl
-        << "Total number of customer served: " << stats.totalCustomersServed << std::endl
+        << "Total number of customers served: " << stats.totalCustomersServed << std::endl
         << "Average wait time: " << ( stats.totalWaitTime / ( double ) stats.totalCustomersServed ) << std::endl
         << "Maximum wait time: " << stats.maximumWait << std::endl
         << "Average line length: " << ( stats.totalWaitTime / ( double ) stats.currentTime / stats.numLines ) << std::endl
