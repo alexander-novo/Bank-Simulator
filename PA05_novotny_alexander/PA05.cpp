@@ -49,6 +49,8 @@ void simulate ( pQueue& events, Stats& stats )
         stats.currentTime++;
     }
 
+    calculateStats ( stats );
+
     delete[] lines;
     delete[] tellers;
 }
@@ -69,6 +71,9 @@ void processEvents ( pQueue& events, Line* lines, bool* tellers, Stats& stats )
             case Event::DEPARTURE:
                 //Free up the teller
                 tellers [ currentEvent.teller ] = false;
+                //Another happy customer
+                stats.totalCustomersServed++;
+
                 std::cout << "Freed up teller " << currentEvent.teller 
                     << " at " << stats.currentTime << std::endl;
                 break;
@@ -80,6 +85,7 @@ void processEvents ( pQueue& events, Line* lines, bool* tellers, Stats& stats )
 
 void processLines ( pQueue& events, Line* lines, bool* tellers, Stats& stats )
 {
+    //Find an open teller
     for ( unsigned tellerIndex = 0; tellerIndex < stats.numTellers; tellerIndex++ )
     {
         //Find an empty teller
@@ -107,6 +113,12 @@ void processLines ( pQueue& events, Line* lines, bool* tellers, Stats& stats )
                     << stats.currentTime << " until " << departEvent.start << std::endl;
             }
         }
+    }
+
+    //Keep track of the people waiting in line
+    for ( unsigned lineIndex = 0; lineIndex < stats.numLines; lineIndex++ )
+    {
+        stats.totalWaitTime += lines [ lineIndex ].size ();
     }
 }
 
@@ -155,4 +167,15 @@ bool shouldEndSimulation ( pQueue& events, Line* lines, bool* tellers, Stats& st
     {
         if ( tellers [ tellerIndex ] ) return false;
     }
+}
+
+void calculateStats (const Stats& stats)
+{
+    std::cout << std::endl << "\tFinal Statistics:" << std::endl
+        << "Number of tellers: " << stats.numTellers << std::endl
+        << "Number of lines: " << stats.numLines << std::endl
+        << "Total number of customer served: " << stats.totalCustomersServed << std::endl
+        << "Average Wait time: " << (stats.totalWaitTime / (double) stats.totalCustomersServed) << std::endl;
+
+    std::cout << std::endl;
 }

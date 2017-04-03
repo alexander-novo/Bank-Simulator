@@ -18,6 +18,9 @@ struct Stats
     unsigned numTellers;
     unsigned numLines;
     unsigned currentTime;
+
+    unsigned long long totalWaitTime = 0;
+    unsigned totalCustomersServed = 0;
 };
 
 void loadEvents ( pQueue& events, const char* filename );
@@ -27,3 +30,4 @@ void processLines ( pQueue& events, Line* lines, bool* tellers, Stats& stats );
 Line* findLongestWait ( Line* lines, Stats& stats );
 Line* findShortestLine ( Line* lines, Stats& stats );
 bool shouldEndSimulation ( pQueue& events, Line* lines, bool* tellers, Stats& stats );
+void calculateStats ( const Stats& stats );
