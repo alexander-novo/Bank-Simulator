@@ -187,6 +187,8 @@ bool shouldEndSimulation ( pQueue& events, Line* lines, bool* tellers, Stats& st
     {
         if ( tellers [ tellerIndex ] ) return false;
     }
+
+    return true;
 }
 
 void calculateStats ( const Stats& stats )
