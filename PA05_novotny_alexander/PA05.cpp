@@ -1,14 +1,24 @@
 #include "PA05.h"
 
-int main ()
+int main ( int argc, char* argv[] )
 {
     pQueue events;
     Stats stats;
 
-    loadEvents ( events, EVENT_FILE );
+    if ( argc < 3 )
+    {
+        std::cout << "Not enough arguments were found" << std::endl
+            << "Usage - banksim <inputFile> <# of tellers> <# of lines>" << std::endl
+            << "Consider trying test.sh" << std::endl;
 
-    stats.numTellers = 1;
-    stats.numLines = 1;
+        return 1;
+    }
+
+    loadEvents ( events, argv [ 1 ] );
+
+    stats.numTellers = atoi ( argv [ 2 ] );
+    stats.numLines = atoi ( argv [ 3 ] );
+
     simulate ( events, stats );
 }
 
