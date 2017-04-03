@@ -11,5 +11,19 @@
 #define EVENT_FILE "events_1.txt"
 
 typedef std::priority_queue<Event, std::vector<Event>, std::greater<Event>> pQueue;
+typedef std::queue<Event> Line;
+
+struct Stats
+{
+    unsigned numTellers;
+    unsigned numLines;
+    unsigned currentTime;
+};
 
 void loadEvents ( pQueue& events, const char* filename );
+void simulate ( pQueue& events, Stats& stats);
+void processEvents ( pQueue& events, Line* lines, bool* tellers, Stats& stats );
+void processLines ( pQueue& events, Line* lines, bool* tellers, Stats& stats );
+Line* findLongestWait ( Line* lines, Stats& stats );
+Line* findShortestLine ( Line* lines, Stats& stats );
+bool shouldEndSimulation ( pQueue& events, Line* lines, bool* tellers, Stats& stats );
