@@ -8,10 +8,11 @@
 #include <cstring>
 
 #include "Event.h"
+#include "PriorityQueue.h"
 
 #define EVENT_FILE "events_1.txt"
 
-typedef std::priority_queue<Event, std::vector<Event>, std::greater<Event>> pQueue;
+typedef PriorityQueue<Event> pQueue;
 typedef std::queue<Event> Line;
 
 struct Stats
