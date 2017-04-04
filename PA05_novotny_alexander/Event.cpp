@@ -3,10 +3,24 @@
 
 bool Event::operator<( const Event& e ) const
 {
-    return start < e.start;
+    if ( start == e.start )
+    {
+        return duration < e.duration;
+    }
+    else
+    {
+        return start < e.start;
+    }
 }
 
 bool Event::operator>( const Event& e ) const
 {
-    return start > e.start;
+    if ( start == e.start )
+    {
+        return duration > e.duration;
+    }
+    else
+    {
+        return start > e.start;
+    }
 }
