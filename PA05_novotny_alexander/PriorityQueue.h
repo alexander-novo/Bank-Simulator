@@ -27,14 +27,12 @@ struct Node
     ItemType value;
 
     Node<ItemType>* next;
-    Node<ItemType>* previous;
 };
 
 template<class ItemType>
 PriorityQueue<ItemType>::PriorityQueue ()
 {
     frontPtr = nullptr;
-    backPtr = nullptr;
 
     length = 0;
 }
@@ -58,10 +56,8 @@ void PriorityQueue<ItemType>::push ( const ItemType& item )
     if ( empty () )
     {
         frontPtr = newNode;
-        backPtr = newNode;
 
         newNode->next = nullptr;
-        newNode->previous = nullptr;
     }
     //Otherwise, find where it goes
     else
@@ -90,17 +86,6 @@ void PriorityQueue<ItemType>::push ( const ItemType& item )
         {
             previousNode->next = newNode;
         }
-
-        //If the next node is nullptr, we have a new back
-        if ( nextNode == nullptr )
-        {
-            backPtr = newNode;
-        }
-        else
-        {
-            newNode->previous = previousNode;
-            nextNode->previous = newNode;
-        }
     }
 
     length++;
@@ -114,10 +99,6 @@ void PriorityQueue<ItemType>::pop ()
     Node<ItemType>* oldFront = frontPtr;
 
     frontPtr = frontPtr->next;
-    if ( frontPtr != nullptr )
-    {
-        frontPtr->previous = nullptr;
-    }
 
     length--;
     delete oldFront;
