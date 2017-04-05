@@ -7,27 +7,27 @@ template<class ItemType>
 class PriorityQueue
 {
     private:
-    Node<ItemType>* frontPtr;
-    Node<ItemType>* backPtr;
+        template<class ItemType>
+        struct Node
+        {
+            ItemType value;
 
-    unsigned length;
+           Node<ItemType>* next;
+        };
+
+        Node<ItemType>* frontPtr;
+        unsigned length;
+
     public:
-    PriorityQueue ();
+        PriorityQueue ();
 
-    bool empty () const;
-    void push ( const ItemType& );
-    void pop ();
-    unsigned size () const;
-    ItemType& top () const;
+        bool empty () const;
+        void push ( const ItemType& );
+        void pop ();
+        unsigned size () const;
+        ItemType& top () const;
 };
 
-template<class ItemType>
-struct Node
-{
-    ItemType value;
-
-    Node<ItemType>* next;
-};
 
 template<class ItemType>
 PriorityQueue<ItemType>::PriorityQueue ()

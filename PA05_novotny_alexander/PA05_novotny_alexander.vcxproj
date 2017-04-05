@@ -142,11 +142,13 @@
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="PA05.cpp" />
     <ClCompile Include="PriorityQueue.cpp" />
+    <ClCompile Include="Queue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Event.h" />
     <ClInclude Include="PA05.h" />
     <ClInclude Include="PriorityQueue.h" />
+    <ClInclude Include="Queue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
