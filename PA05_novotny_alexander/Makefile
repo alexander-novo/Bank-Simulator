@@ -1,11 +1,12 @@
 PROGRAM_NAME=banksim
 CFLAGS=-c -Wall -std=c++11
+OBJECTS=PA05.o Event.o PriorityQueue.o Queue.o
 
 all: banksim numGenerator
 
 # Main program for assignment
-banksim: PA05.o Event.o PriorityQueue.o
-	g++ PA05.o Event.o PriorityQueue.o -o $(PROGRAM_NAME)
+banksim: $(OBJECTS)
+	g++ $(OBJECTS) -o $(PROGRAM_NAME)
 
 # Random event generator
 numGenerator: numGenerator.o

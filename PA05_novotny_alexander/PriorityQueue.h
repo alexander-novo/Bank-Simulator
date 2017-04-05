@@ -7,12 +7,12 @@ template<class ItemType>
 class PriorityQueue
 {
     private:
-        template<class ItemType>
+        template<class NodeType>
         struct Node
         {
-            ItemType value;
+            NodeType value;
 
-           Node<ItemType>* next;
+            Node<NodeType>* next;
         };
 
         Node<ItemType>* frontPtr;
