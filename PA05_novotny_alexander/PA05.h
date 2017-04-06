@@ -1,19 +1,18 @@
 #pragma once
 
 #include <fstream>
-#include <functional>
 #include <iostream>
-#include <queue>
 #include <vector>
 #include <cstring>
 
 #include "Event.h"
 #include "PriorityQueue.h"
+#include "Queue.h"
 
 #define EVENT_FILE "events_1.txt"
 
 typedef PriorityQueue<Event> pQueue;
-typedef std::queue<Event> Line;
+typedef Queue<Event> Line;
 
 struct Stats
 {

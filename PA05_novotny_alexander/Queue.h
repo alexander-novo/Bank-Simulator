@@ -17,6 +17,7 @@ class Queue
         unsigned length;
     public:
         Queue ();
+        ~Queue ();
 
         bool empty () const;
         void push ( const ItemType& );
@@ -31,6 +32,27 @@ Queue<ItemType>::Queue ()
     backPtr = nullptr;
 
     length = 0;
+}
+
+template<class ItemType>
+Queue<ItemType>::~Queue ()
+{
+    if ( backPtr == nullptr ) return;
+    Node<ItemType>* previousPtr = backPtr;
+    Node<ItemType>* nextPtr = backPtr->next;
+
+    while( nextPtr != backPtr )
+    {
+        
+        nextPtr = nextPtr->next;
+
+        previousPtr->next = nullptr;
+        delete previousPtr;
+        length--;
+    } while ( nextPtr != backPtr );
+
+    backPtr->next = nullptr;
+    delete backPtr;
 }
 
 template<class ItemType>
@@ -68,7 +90,15 @@ void Queue<ItemType>::pop ()
 
     Node<ItemType>* oldFront = backPtr->next;
 
-    backPtr->next = backPtr->next->next;
+    if ( length == 1 )
+    {
+        backPtr = nullptr;
+        oldFront->next = nullptr;
+    }
+    else
+    {
+        backPtr->next = backPtr->next->next;
+    }
 
     length--;
     delete oldFront;

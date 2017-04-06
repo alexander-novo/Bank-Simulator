@@ -20,6 +20,7 @@ class PriorityQueue
 
     public:
         PriorityQueue ();
+        ~PriorityQueue ();
 
         bool empty () const;
         void push ( const ItemType& );
@@ -35,6 +36,22 @@ PriorityQueue<ItemType>::PriorityQueue ()
     frontPtr = nullptr;
 
     length = 0;
+}
+
+template<class ItemType>
+PriorityQueue<ItemType>::~PriorityQueue ()
+{
+    Node<ItemType>* previousPtr = nullptr;
+    Node<ItemType>* nextPtr = frontPtr;
+
+    while ( nextPtr != nullptr )
+    {
+        previousPtr = nextPtr;
+        nextPtr = nextPtr->next;
+
+        previousPtr->next = nullptr;
+        delete previousPtr;
+    }
 }
 
 template<class ItemType>
