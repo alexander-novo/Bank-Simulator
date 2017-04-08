@@ -1,5 +1,28 @@
+//  PROGRAM INFORMATION ///////////////////////////////////////////////////////
+/**
+  * @file PA05.cpp
+  *
+  * @brief Simulator to test bank queues
+  *
+  * @details Simulator which takes in a list of arrival events consisting of
+  *          an arrival time and duration and simulates how long people would
+  *          have to wait in a line for the bank teller
+  *
+  * @version 1.00
+  *          Alexander Novotny
+  *          First Version
+  *
+  * @notes Requires command line arguments. 
+  *        <command> <filename> <# tellers> <# lines>
+  *        filename - name of the file to load arrival events from
+  *        # tellers - number of bank tellers to use in the simulation
+  *        # lines - number of queues for people to wait in in the simulation
+  */
+
+// MAIN HEADER ////////////////////////////////////////////////////////////////
 #include "PA05.h"
 
+// MAIN FUNCTION //////////////////////////////////////////////////////////////
 int main ( int argc, char* argv[] )
 {
     pQueue events;
@@ -22,6 +45,18 @@ int main ( int argc, char* argv[] )
     simulate ( events, stats );
 }
 
+/**
+  * @brief Loads a list of arrival events from a file
+  *
+  * @param[in] filename
+  *            The name of the file to load from
+  *
+  * @param[out] events
+  *             A priority queue to hold the events
+  *
+  * @post events
+  *       Events will be filled with the loaded events
+  */
 void loadEvents ( pQueue& events, const char* filename )
 {
     std::ifstream input ( filename );
@@ -31,11 +66,43 @@ void loadEvents ( pQueue& events, const char* filename )
     while ( input.peek () != EOF )
     {
         input >> add.start >> add.duration;
+        //For linux - input.peek() doesn't work, maybe because of line endings?
         if ( input.eof() ) break;
         events.push ( add );
     }
 }
-
+/**
+  * @brief Main simulation function
+  *
+  * @details Runs an entire simulation on the events given as described by stats
+  *          and keeps track of certain statistics in stats
+  *
+  * @param[in] events
+  *            The queue of events to simulate on
+  *
+  * @param[in] stats
+  *            stats.numLines and stats.numTellers will specify the parameters
+  *            of the simulation
+  *
+  * @param[out] stats
+  *             Contains the statistics of the finished simulation
+  *
+  * @pre stats
+  *      Must contain a valid numLines and numTellers
+  *
+  * @post events
+  *       Will be empty
+  *
+  * @post stats
+  *       Will contain statistics of the finished simulation
+  *
+  * @par Algorithm
+  *      Every unit of time, checks if a new arrival or departure event has occured,
+  *      adds it to the shortest line, and then moves the lines up once someone
+  *      has departed from the teller
+  *
+  * @note See processEvents(), processLines(), shouldEndSimulation()
+  */
 void simulate ( pQueue& events, Stats& stats )
 {
     Line* lines = new Line [ stats.numLines ];
@@ -49,12 +116,13 @@ void simulate ( pQueue& events, Stats& stats )
 
     while ( !end )
     {
-        //Then check our events
+        //Check if there are any new events occurring
         processEvents ( events, lines, tellers, stats );
 
-        //Process every line
+        //Move the lines up if someone has left the teller
         processLines ( events, lines, tellers, stats );
 
+        //Based on what has happened, should we end yet?
         end = shouldEndSimulation ( events, lines, tellers, stats );
 
         stats.currentTime++;
@@ -66,6 +134,30 @@ void simulate ( pQueue& events, Stats& stats )
     delete[] tellers;
 }
 
+/**
+  * @brief Checks if any new events have occured, and processes them
+  *
+  * @param[in] events
+  *            The queue of events to check
+  *
+  * @param[in] lines
+  *            An array of queues which hold people waiting for a teller
+  *
+  * @param[in] tellers
+  *            An array of booleans signifying a person waiting at a teller
+  *
+  * @param[in] stats
+  *            Number of tellers and lines, as well as current time
+  *
+  * @post events
+  *       Might have decreased in size if events have been processed
+  *
+  * @post lines
+  *       Might have more people in them if an arrival event was processed
+  *
+  * @post tellers
+  *       Some tellers might have been freed up if a departure event was processed
+  */
 void processEvents ( pQueue& events, Line* lines, bool* tellers, Stats& stats )
 {
     //Keep processing the top event as long as it should be happening right now
@@ -94,6 +186,30 @@ void processEvents ( pQueue& events, Line* lines, bool* tellers, Stats& stats )
     }
 }
 
+/**
+  * @brief Moves people from the from the front of a line into an empty teller
+  *
+  * @param[in] lines
+  *            An array of queues holding waiting people
+  *
+  * @param[in] tellers
+  *            An array of booleans which represent busy tellers
+  *
+  * @param[in] stats
+  *            Keeps track of number of lines and tellers, as well as current time
+  *      
+  * @param[out] events
+  *            A priority queue of events for adding departure events
+  *
+  * @post events
+  *       New departure events will have been added if someone has started seeing a teller
+  *
+  * @post lines
+  *       Some people might have exited their line to go to a teller
+  *
+  * @post tellers
+  *       Unocuppied tellers will become occupied if someone is waiting in a line
+  */
 void processLines ( pQueue& events, Line* lines, bool* tellers, Stats& stats )
 {
     //Find an open teller
@@ -143,6 +259,18 @@ void processLines ( pQueue& events, Line* lines, bool* tellers, Stats& stats )
     }
 }
 
+
+/**
+  * @brief Finds the line with the person in front who has been waiting the longest
+  *
+  * @param[in] lines
+  *            An array of lines to check through
+  *
+  * @param[in] stats
+  *            The number of lines
+  *
+  * @return Pointer to the line with the longest waiting person in front
+  */
 Line* findLongestWait ( Line* lines, Stats& stats )
 {
     Line* min = nullptr;
@@ -162,6 +290,17 @@ Line* findLongestWait ( Line* lines, Stats& stats )
     return min;
 }
 
+/**
+  * @brief Finds the line with the fiewest people waiting in it
+  *
+  * @param[in] lines
+  *            The list of lines to search through
+  *
+  * @param[in] stats
+  *            The number of lines
+  *
+  * @return Pointer to the shortest line
+  */
 Line* findShortestLine ( Line* lines, Stats& stats )
 {
     //Assume shortest is the first one
@@ -179,6 +318,26 @@ Line* findShortestLine ( Line* lines, Stats& stats )
     return min;
 }
 
+/**
+  * @brief Determines whether the simulation should end
+  *
+  * @param[in] events
+  *            A list of remaining events
+  *
+  * @param[in] lines
+  *            A list of lines which contain waiting people
+  *
+  * @param[in] tellers
+  *            A list of booleans which determine if a teller is busy
+  *
+  * @param[in] stats
+  *            Number of tellers
+  *
+  * @par Algorithm
+  *      If there are any events left, we haven't finished yet
+  *
+  * @return Whether the simulation should end
+  */
 bool shouldEndSimulation ( pQueue& events, Line* lines, bool* tellers, Stats& stats )
 {
     //If we have any events left, don't end
@@ -192,6 +351,13 @@ bool shouldEndSimulation ( pQueue& events, Line* lines, bool* tellers, Stats& st
     return true;
 }
 
+/**
+  * @brief Calculates and prints stats about a simulation
+  *
+  * @param[in] stats
+  *            The stats object passed to the simulation used to keep track of 
+  *            the simulation statistics
+  */
 void calculateStats ( const Stats& stats )
 {
     std::cout << std::endl << "\tFinal Statistics:" << std::endl

@@ -1,7 +1,16 @@
+// CLASS INFORMATION //////////////////////////////////////////////////////////
+/**
+  * @file PriorityQueue.h
+  *
+  * @brief Queue which sorts items as they are inserted into the queue
+  *
+  * @details Link-based implementation of a queue which places new nodes into the
+  *          chain based on the > operator
+  *
+  * @version 1.00
+  *          Alexander Novotny
+  */
 #pragma once
-
-template<class ItemType>
-struct Node;
 
 template<class ItemType>
 class PriorityQueue
@@ -29,7 +38,7 @@ class PriorityQueue
         ItemType& top () const;
 };
 
-
+// DEFAULT CONSTRUCTOR ////////////////////////////////////////////////////////
 template<class ItemType>
 PriorityQueue<ItemType>::PriorityQueue ()
 {
@@ -38,6 +47,7 @@ PriorityQueue<ItemType>::PriorityQueue ()
     length = 0;
 }
 
+// DESTRUCTOR /////////////////////////////////////////////////////////////////
 template<class ItemType>
 PriorityQueue<ItemType>::~PriorityQueue ()
 {

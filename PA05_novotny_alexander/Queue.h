@@ -49,7 +49,7 @@ Queue<ItemType>::~Queue ()
         previousPtr->next = nullptr;
         delete previousPtr;
         length--;
-    } while ( nextPtr != backPtr );
+    }
 
     backPtr->next = nullptr;
     delete backPtr;
