@@ -43,11 +43,12 @@ Queue<ItemType>::~Queue ()
 
     while( nextPtr != backPtr )
     {
-        
+        previousPtr = nextPtr;
         nextPtr = nextPtr->next;
 
         previousPtr->next = nullptr;
         delete previousPtr;
+
         length--;
     }
 
